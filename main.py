@@ -62,7 +62,7 @@ def getAllNews(): # a list f dictionary of all news
     news={}
     page_no=1
     #news page
-    while page_no==1:
+    while page_no<500:
         news_page='http://archive.sharesansar.com/category/latest/page/'+str(page_no)+'/'
         uClient=opener.open(news_page)
         #HTML Contents
