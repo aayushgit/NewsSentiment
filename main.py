@@ -58,11 +58,12 @@ def getCompanyList(): #function to return a list of dictionary of companies
 
 all_companies=getCompanyList()
 
-def getAllNews(): # a list f dictionary of all news
+# a list f dictionary of all news
+def getAllNews():
     news={}
-    page_no=1
+    page_no = 1
     #news page
-    while page_no<500:
+    while page_no<=3:
         news_page='http://archive.sharesansar.com/category/latest/page/'+str(page_no)+'/'
         uClient=opener.open(news_page)
         #HTML Contents
@@ -92,8 +93,8 @@ def getAllNews(): # a list f dictionary of all news
                 else:
                     news['newsof']='NEPSE'
                 news_list.append(news.copy())
-        page_no+=page_no
-        return news_list
+        page_no+1
+    return news_list
 
 all_news=getAllNews()
 print(all_news)
