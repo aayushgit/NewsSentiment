@@ -22,14 +22,6 @@ element.send_keys("500")
 button = driver.find_element_by_xpath("//input[@value='Filter']")
 button.click()
 company=driver.page_source
-
-# class AppURLOpener(urllib.request.FancyURLopener):
-#     version = "Mozilla/5.0"
-#
-# opener=AppURLOpener()
-# uClient=opener.open(company)
-# cpage=uClient.read()
-# uClient.close()
 company_list={}
 # name_list=[]
 # ab_list=[]

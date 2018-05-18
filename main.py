@@ -13,6 +13,8 @@ from selenium import webdriver
 import csv
 import company_classifier
 
+news_list=[]
+
 class AppURLOpener(urllib.request.FancyURLopener):
     version = "Mozilla/5.0"
 
@@ -72,30 +74,30 @@ def getAllNews():
         uClient.close()
         soup=BeautifulSoup(page_html,'lxml')
         #classify news according to company
-        news_list=[]
 
-        for article in soup.find_all('div',class_='media-body'):
+        for article in soup.find_all('div', class_='media-body'):
             headline = article.h4.text
-            news['headline']=headline
-            for link_get in article.find_all('a',href=True):
-                link=link_get.get('href')
-                news['link']=link
-                uPage=opener.open(link)
-                uhtml=uPage.read()
+            news['headline'] = headline
+            for link_get in article.find_all('a', href=True):
+                link = link_get.get('href')
+                news['link'] = link
+                uPage = opener.open(link)
+                uhtml = uPage.read()
                 uPage.close()
-                soup2=BeautifulSoup(uhtml,'lxml')
-                date_div = soup2.find('span',class_='singleNewsPublishDate')
-                news['date']=parser.parse(date_div.text.strip()).strftime('%d/%m/%Y')
-                news_div = soup2.find('div',class_='singleNewsParagraph')
-                news['content']=news_div.text
-                if(company_classifier.classifier(news['content'])):
-                    news['newsof']=company_classifier.classifier(news['content'])
+                soup2 = BeautifulSoup(uhtml, 'lxml')
+                date_div = soup2.find('span', class_='singleNewsPublishDate')
+                news['date'] = date_div.text.strip()
+                news_div = soup2.find('div', class_='singleNewsParagraph')
+                news['content'] = news_div.text
+                if (company_classifier.classifier(news['content'])):
+                    news['newsof'] = company_classifier.classifier(news['content'])
                 else:
-                    news['newsof']='NEPSE'
+                    news['newsof'] = 'NEPSE'
                 news_list.append(news.copy())
-        page_no+1
-    return news_list
-
+                # print(news)
+        print("Getting News at page" + str(page_no))
+        page_no = page_no + 1
+    return (news_list)
 all_news=getAllNews()
 print(all_news)
 
@@ -104,7 +106,7 @@ def write_news(news_list):
     csv = open(fin_news, "w")
     columnTitleRow = "date, link, headline, content, newsof \n"
     csv.write(columnTitleRow)
-    for i in all_news:
+    for i in news_list:
             date=i['date']
             link = i['link']
             headline = i['headline']
