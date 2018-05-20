@@ -23,8 +23,8 @@ button = driver.find_element_by_xpath("//input[@value='Filter']")
 button.click()
 company=driver.page_source
 company_list={}
-# name_list=[]
-# ab_list=[]
+name_list=[]
+ab_list=[]
 soup=BeautifulSoup(company,'lxml')
 table =  soup.find('table',class_='my-table')
 data=table.find_all('tr')
@@ -42,22 +42,21 @@ for row in data:
     company_list["symbol"] = cols[3]
     company_list["category"] = cols[4]
     company.append(company_list.copy())
-    print(company_list)
 
-    # name_list.append(company_list["name"])
-    # ab_list.append(company_list["symbol"])
+    name_list.append(company_list["name"])
+    ab_list.append(company_list["symbol"])
 
 #Creating and Replacing code for Company Classification
-#
-# for i,j in zip(name_list,ab_list):
-#     i = re.sub(r"[^\w\s]", '', i)
-#     i = re.sub(r"\s+", '\\s', i)
-#     print("""
-#     #Regular Expression for %s
-#     %s = re.compile(r'(%s)|(%s)')
-#         if %s.search(news):
-#         return('%s')
-#         """%(j,j,i,j,j,j))
+
+for i,j in zip(name_list,ab_list):
+    i = re.sub(r"[^\w\s]", '', i)
+    i = re.sub(r"\s+", '\\s', i)
+    print("""
+    #Regular Expression for %s
+    %s = re.compile(r'(%s)|(%s)')
+        if %s.search(news):
+        return('%s','NEPSE')
+        """%(j,j,i,j,j,j))
 
 
 

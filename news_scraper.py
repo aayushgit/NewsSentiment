@@ -18,7 +18,7 @@ def scrape_news():
     page_no=1
     news_list=[]
     #news page
-    while page_no<=3:
+    while page_no<=10:
         news_page='http://archive.sharesansar.com/category/latest/page/'+str(page_no)+'/'
         uClient=opener.open(news_page)
         #HTML Contents
@@ -46,8 +46,6 @@ def scrape_news():
                 news['content']=news_div.text
                 if (company_classifier.classifier(news['content'])):
                     news['newsof'] = company_classifier.classifier(news['content'])
-                else:
-                    news['newsof'] = 'NEPSE'
                 news_list.append(news.copy())
                 # print(news)
         print("Getting News at page" + str(page_no))

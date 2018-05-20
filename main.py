@@ -12,21 +12,23 @@ from dateutil import parser
 from selenium import webdriver
 import csv
 import company_classifier
+import news_scraper
 
-news_list=[]
+news_list = []
+
 
 class AppURLOpener(urllib.request.FancyURLopener):
     version = "Mozilla/5.0"
 
-opener=AppURLOpener()
 
-#adding incognito
+opener = AppURLOpener()
+
+# adding incognito
 option = webdriver.ChromeOptions()
 option.add_argument("--incognito")
 
 
-
-def getCompanyList(): #function to return a list of dictionary of companies
+def getCompanyList():  # function to return a list of dictionary of companies
     # opening an instance of browser
     driver = webdriver.Chrome(executable_path='/Users/aayushsharma/python/voterlist/chromedriver',
                               chrome_options=option)
@@ -42,7 +44,7 @@ def getCompanyList(): #function to return a list of dictionary of companies
     data = table.find_all('tr')
     index = slice(2, len(data) - 1)
     data = data[index]
-    company=[]
+    company = []
     for row in data:
         cols = row.find_all('td')
         rindex = slice(0, len(cols) - 1)
@@ -57,64 +59,15 @@ def getCompanyList(): #function to return a list of dictionary of companies
     return company
 
 
-
-all_companies=getCompanyList()
-
-# a list f dictionary of all news
-def getAllNews():
-    news={}
-    page_no = 1
-    #news page
-    while page_no<=3:
-        news_page='http://archive.sharesansar.com/category/latest/page/'+str(page_no)+'/'
-        uClient=opener.open(news_page)
-        #HTML Contents
-        page_html = uClient.read()
-        #close connection
-        uClient.close()
-        soup=BeautifulSoup(page_html,'lxml')
-        #classify news according to company
-
-        for article in soup.find_all('div', class_='media-body'):
-            headline = article.h4.text
-            news['headline'] = headline
-            for link_get in article.find_all('a', href=True):
-                link = link_get.get('href')
-                news['link'] = link
-                uPage = opener.open(link)
-                uhtml = uPage.read()
-                uPage.close()
-                soup2 = BeautifulSoup(uhtml, 'lxml')
-                date_div = soup2.find('span', class_='singleNewsPublishDate')
-                news['date'] = date_div.text.strip()
-                news_div = soup2.find('div', class_='singleNewsParagraph')
-                news['content'] = news_div.text
-                if (company_classifier.classifier(news['content'])):
-                    news['newsof'] = company_classifier.classifier(news['content'])
-                else:
-                    news['newsof'] = 'NEPSE'
-                news_list.append(news.copy())
-                # print(news)
-        print("Getting News at page" + str(page_no))
-        page_no = page_no + 1
-    return (news_list)
-all_news=getAllNews()
-print(all_news)
+all_companies = getCompanyList()
+all_news = news_scraper.scrape_news()
 
 def write_news(news_list):
-    fin_news = "fin_news.csv"
-    csv = open(fin_news, "w")
-    columnTitleRow = "date, link, headline, content, newsof \n"
-    csv.write(columnTitleRow)
-    for i in news_list:
-            date=i['date']
-            link = i['link']
-            headline = i['headline']
-            content = i['content']
-            newsof = i['newsof']
-            row=date+","+link+","+headline+","+content+","+newsof+"\n"
-            csv.write(row)
-    return ()
+    f=open("fin_news.csv","w")
+    writer=csv.DictWriter(f,fieldnames=["date","link","headline","content","newsof"])
+    writer.writeheader()
+    writer.writerows(news_list)
+    f.close()
 
 write_news(all_news)
-print(all_news)
+print()
