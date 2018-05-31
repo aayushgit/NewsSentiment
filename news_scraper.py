@@ -9,16 +9,17 @@ Created on Sun Apr 22 19:00:48 2018
 from bs4 import BeautifulSoup
 import urllib.request
 import company_classifier
+import csv
 def scrape_news():
     class AppURLOpener(urllib.request.FancyURLopener):
         version = "Mozilla/5.0"
 
     opener=AppURLOpener()
     news={}
-    page_no=1
+    page_no=10
     news_list=[]
     #news page
-    while page_no<=10:
+    while page_no>=1:
         news_page='http://archive.sharesansar.com/category/latest/page/'+str(page_no)+'/'
         uClient=opener.open(news_page)
         #HTML Contents
@@ -26,7 +27,7 @@ def scrape_news():
         #close connection
         uClient.close()
 
-        soup=BeautifulSoup(page_html,'lxml')
+        soup=BeautifulSoup(page_html,'lxml',from_encoding="utf-8")
 
         #classify news according to company
 
@@ -39,7 +40,7 @@ def scrape_news():
                 uPage=opener.open(link)
                 uhtml=uPage.read()
                 uPage.close()
-                soup2=BeautifulSoup(uhtml,'lxml')
+                soup2=BeautifulSoup(uhtml,'lxml',from_encoding="utf-8")
                 date_div = soup2.find('span',class_='singleNewsPublishDate')
                 news['date']=date_div.text.strip()
                 news_div = soup2.find('div',class_='singleNewsParagraph')
@@ -47,9 +48,17 @@ def scrape_news():
                 if (company_classifier.classifier(news['content'])):
                     news['newsof'] = company_classifier.classifier(news['content'])
                 news_list.append(news.copy())
-                # print(news)
         print("Getting News at page" + str(page_no))
-        page_no=page_no+1
+
+#writing news into CSV file
+        with open("fin_news.csv",'w') as newsfile:
+            writer = csv.DictWriter(newsfile, fieldnames=["date", "link", "headline", "content", "newsof"])
+            writer.writeheader()
+            writer.writerows(news_list)
+        page_no=page_no-1
+        print("Writing to CSV " + str(page_no))
+
     return(news_list)
 
-print(scrape_news())
+if __name__ == "__main__":
+    scrape_news()

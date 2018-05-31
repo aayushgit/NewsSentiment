@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 """
 Created on Sun Apr 22 19:00:48 2018
 
@@ -58,16 +58,3 @@ def getCompanyList():  # function to return a list of dictionary of companies
 
     return company
 
-
-all_companies = getCompanyList()
-all_news = news_scraper.scrape_news()
-
-def write_news(news_list):
-    f=open("fin_news.csv","w")
-    writer=csv.DictWriter(f,fieldnames=["date","link","headline","content","newsof"])
-    writer.writeheader()
-    writer.writerows(news_list)
-    f.close()
-
-write_news(all_news)
-print()

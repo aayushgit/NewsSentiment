@@ -25,7 +25,7 @@ company=driver.page_source
 company_list={}
 name_list=[]
 ab_list=[]
-soup=BeautifulSoup(company,'lxml')
+soup=BeautifulSoup(company,'lxml',from_encoding="utf-8")
 table =  soup.find('table',class_='my-table')
 data=table.find_all('tr')
 index=slice(2,len(data)-1)
@@ -55,7 +55,8 @@ for i,j in zip(name_list,ab_list):
     #Regular Expression for %s
     %s = re.compile(r'(%s)|(%s)')
         if %s.search(news):
-        return('%s','NEPSE')
+        var.append('%s')
+        return(var)
         """%(j,j,i,j,j,j))
 
 
