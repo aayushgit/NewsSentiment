@@ -1,4 +1,0 @@
-import company_classifier
-news='Vibor Capital Limited has received responsibility to function as a share registrar for 3 popular Hydropower companies namely Api Power Company Limited, Arun Valley Hydropower Development Company Limited and Arun Kaveli Power Limited. After the agreement which was signed on Chaitra 20, 2074, all the matters pertaining to share registration of these 3 hydropower companies would be handled from Baisakh 2, 2075 by Vibor Capital.Issuing the press statement, it has been informed that chairman of Arun Kaveli Mr. Guru Prashad Neupane, chairman of Arun Valley Mr. Ramesh Prashad Neupane, Company Secretary of Api Power Ms Srijana Dangal and CEO of Vibor Capital Mr. Badri Bikram Thapa signed the agreement on behalf of their respective organizations. '
-
-print(company_classifier.classifier(news))
